@@ -35,6 +35,7 @@ export default {
                 }
             })
             .then((res) => {
+                // new TradingVueJs.DataCube(data)
                 this.data.ohlcv = res.data.Data.Data.map((el) => {
                     return [
                         el.time, 

@@ -15,4 +15,7 @@ export default {
     histohour(params) {
         return client.get(`v2/histohour`, params);
     },
+    topTotalvolfull(params) {
+        return client.get(`top/totalvolfull`, params);
+    },
 };

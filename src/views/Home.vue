@@ -3,32 +3,35 @@
     <div class="row w-100 h-100">
       <div class="col-md-5 col-lg-3">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted">Currencies</span>
-          <span v-if="currencies.DISPLAY" class="badge bg-secondary rounded-pill">{{ Object.keys(currencies.DISPLAY).length }}</span>
+          <span class="text-muted">Toplist by 24H</span>
+          <span v-if="currencies.length" class="badge bg-secondary rounded-pill">{{ currencies.length }}</span>
         </h4>
-        <ul v-if="currencies.DISPLAY" class="list-group mb-3">
+        <ul v-if="currencies.length" class="list-group mb-3">
           <router-link 
-            v-for="(currency, i) in currencies.DISPLAY" 
-            :key="i" 
+            v-for="(currency, i) in currencies" 
+            :key="currency.CoinInfo.Internal" 
             tag="li" 
             active-class="active" 
             class="currency-item list-group-item d-flex justify-content-between lh-sm"
-            :to="{ name: 'currency', params: {id: i}}"
+            :to="{ name: 'currency', params: {id: currency.CoinInfo.Internal}}"
           >
             <div>
               <h6 class="my-0 d-flex align-items-center">
-                <img :src="`${crypto_app_url}/${currency.USD.IMAGEURL}`" alt="" style="max-width: 30px">
-                <span class="currency-item__name ml-3 text-muted">{{ i }}</span>
+                <img :src="`${crypto_app_url}/${currency.CoinInfo.ImageUrl}`" :alt="currency.CoinInfo.FullName" style="max-width: 30px">
+                <span class="currency-item__name ml-3 text-muted">{{ currency.CoinInfo.FullName }}</span>
               </h6>
               <!-- <small class="text-muted">Brief description</small> -->
             </div>
             <div class="d-flex flex-column">
-              <span v-for="(sub_currency, j) in currency" :key="`${i}-${j}`" class="text-muted">
+              <span v-for="(sub_currency, j) in currency.DISPLAY" :key="`${i}-${j}`" class="text-muted">
                 {{ sub_currency.PRICE }} 
               </span>
             </div>
           </router-link>
         </ul>
+        <figcaption class="blockquote-footer mt-4">
+          Test Task by Andrew Beznosko <a href="https://github.com/AndrewBeznosko/my-crypto" target="_blank"><cite title="Source Title">Source Code</cite></a>
+        </figcaption>
       </div>
       <div class="col-lg-9 d-flex flex-column">
         <h4 class="d-flex justify-content-between align-items-center mb-3 ml-lg-5 pl-lg-2" style="flex: 0 1 auto;">
@@ -57,21 +60,19 @@ export default {
     return {
       crypto_app_url: process.env.VUE_APP_CRYPTOCOMPARE_URL,
       currencies: {},
-      currenciesName: []
     }
   },
   methods: {
     getCurrencies() {
-      ApiCryptoCompare.pricemultifull({
+      ApiCryptoCompare.topTotalvolfull({
         params: {
-          fsyms: 'BTC,ETH,DASH,REP',
-          tsyms: 'USD'
+          limit: 15,
+          tsym: 'USD'
         }
       })
       .then((res) => {
-        this.currenciesName = Object.getOwnPropertyNames(res.data.DISPLAY)
-        if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: this.currenciesName[0]}})
-        this.currencies = res.data
+        if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: res.data.Data[0].CoinInfo.Name}})
+        this.currencies = res.data.Data
       })
       .catch((err) => {
         console.log(err)
@@ -79,7 +80,6 @@ export default {
     },
   },
   mounted() {
-    // console.log(process.env.VUE_APP_CRYPTOCOMPARE_URL)
     this.getCurrencies()
   }
 }
