@@ -12,4 +12,7 @@ export default {
     pricemultifull(params) {
         return client.get(`pricemultifull`, params);
     },
+    histohour(params) {
+        return client.get(`v2/histohour`, params);
+    },
 };
