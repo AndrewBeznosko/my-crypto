@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="bg-light vh-100">
+  <div id="app" class="vh-100">
     <router-view/>
   </div>
 </template>
@@ -11,5 +11,6 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color: #121826;
 }
 </style>

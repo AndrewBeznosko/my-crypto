@@ -1,12 +1,12 @@
 <template>
   <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-center py-3">
     <div class="row w-100 h-100">
-      <div v-if="currencies.DISPLAY" class="col-md-5 col-lg-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3" ые>
+      <div class="col-md-5 col-lg-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-muted">Currencies</span>
-          <span class="badge bg-secondary rounded-pill">{{ Object.keys(currencies.DISPLAY).length }}</span>
+          <span v-if="currencies.DISPLAY" class="badge bg-secondary rounded-pill">{{ Object.keys(currencies.DISPLAY).length }}</span>
         </h4>
-        <ul class="list-group mb-3">
+        <ul v-if="currencies.DISPLAY" class="list-group mb-3">
           <router-link 
             v-for="(currency, i) in currencies.DISPLAY" 
             :key="i" 
@@ -18,7 +18,7 @@
             <div>
               <h6 class="my-0 d-flex align-items-center">
                 <img :src="`${crypto_app_url}/${currency.USD.IMAGEURL}`" alt="" style="max-width: 30px">
-                <span class="currency-item__name ml-3">{{ i }}</span>
+                <span class="currency-item__name ml-3 text-muted">{{ i }}</span>
               </h6>
               <!-- <small class="text-muted">Brief description</small> -->
             </div>
@@ -30,9 +30,10 @@
           </router-link>
         </ul>
       </div>
-      <div class="col-lg-9 border-left d-flex flex-column">
-        <h4 class="d-flex justify-content-between align-items-center mb-3" style="flex: 0 1 auto;">
-          <span class="text-muted">Daily Pair <span class="fw-bold">BTC \ USD</span></span>
+      <div class="col-lg-9 d-flex flex-column">
+        <h4 class="d-flex justify-content-between align-items-center mb-3 ml-lg-5 pl-lg-2" style="flex: 0 1 auto;">
+          <span class="text-muted">Daily Pair </span>
+          <span class="badge bg-secondary rounded-pill"><span class="fw-bold">{{ $route.params.id }} / USD</span></span>
         </h4>
         <router-view/>
       </div>
@@ -69,7 +70,7 @@ export default {
       })
       .then((res) => {
         this.currenciesName = Object.getOwnPropertyNames(res.data.DISPLAY)
-        this.$router.push({ name: 'currency', params: {id: this.currenciesName[0]}})
+        if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: this.currenciesName[0]}})
         this.currencies = res.data
       })
       .catch((err) => {
@@ -87,12 +88,19 @@ export default {
 <style scoped lang="scss">
   .currency-item {
     cursor: pointer;
+    background-color: #2c3945;
 
-    &:hover {
-      background-color: #f8f9fa;
+    &:hover,
+    &.active {
+      background-color: #23a776;
+      border-color: #23a776;
+
+      .text-muted {
+        color: #fff !important;
+      }
 
       .currency-item__name {
-        text-decoration: underline;
+        color: #fff;
       }
     }
   }
