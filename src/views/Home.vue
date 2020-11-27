@@ -1,18 +1,85 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container vh-100 d-flex flex-column align-items-center justify-content-center">
+    <HelloWorld msg="Test Task Crypto"/>
+    <div class="row w-100">
+      <div class="col-md-5 col-lg-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">Currencies</span>
+          <span class="badge bg-secondary rounded-pill">{{ currencies.length }}</span>
+        </h4>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Product name</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">$12</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Second product</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">$8</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Third item</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">$5</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+              <h6 class="my-0">Promo code</h6>
+              <small>EXAMPLECODE</small>
+            </div>
+            <span class="text-success">−$5</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total (USD)</span>
+            <strong>$20</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
+import ApiCryptoCompare from '@/api/cryptocompare'
 
 export default {
   name: 'Home',
   components: {
     HelloWorld
+  },
+  data() {
+    return {
+      currencies: []
+    }
+  },
+  methods: {
+    getCurrencies() {
+      ApiCryptoCompare.pricemultifull({
+        params: {
+          fsyms: 'BTC',
+          tsyms: 'USD,EUR'
+        }
+      })
+      .then((res) => {
+        this.currencies = res.data
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  },
+  mounted() {
+    console.log(process.env.VUE_APP_CRYPTOCOMPARE_URL)
+    this.getCurrencies()
   }
 }
 </script>
