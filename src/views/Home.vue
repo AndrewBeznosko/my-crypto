@@ -7,7 +7,14 @@
           <span class="badge bg-secondary rounded-pill">{{ Object.keys(currencies.DISPLAY).length }}</span>
         </h4>
         <ul class="list-group mb-3">
-          <li v-for="(currency, i) in currencies.DISPLAY" :key="i" class="currency-item list-group-item d-flex justify-content-between lh-sm">
+          <router-link 
+            v-for="(currency, i) in currencies.DISPLAY" 
+            :key="i" 
+            tag="li" 
+            active-class="active" 
+            class="currency-item list-group-item d-flex justify-content-between lh-sm"
+            :to="{ name: 'currency', params: {id: i}}"
+          >
             <div>
               <h6 class="my-0 d-flex align-items-center">
                 <img :src="`${crypto_app_url}/${currency.USD.IMAGEURL}`" alt="" style="max-width: 30px">
@@ -20,39 +27,14 @@
                 {{ sub_currency.PRICE }} 
               </span>
             </div>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Second product</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$8</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between bg-light">
-            <div class="text-success">
-              <h6 class="my-0">Promo code</h6>
-              <small>EXAMPLECODE</small>
-            </div>
-            <span class="text-success">−$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <span>Total (USD)</span>
-            <strong>$20</strong>
-          </li>
+          </router-link>
         </ul>
       </div>
       <div class="col-lg-9 border-left d-flex flex-column">
         <h4 class="d-flex justify-content-between align-items-center mb-3" style="flex: 0 1 auto;">
           <span class="text-muted">Daily Pair <span class="fw-bold">BTC \ USD</span></span>
         </h4>
-        <my-chart/>
+        <router-view/>
       </div>
     </div>
   </div>
@@ -87,6 +69,7 @@ export default {
       })
       .then((res) => {
         this.currenciesName = Object.getOwnPropertyNames(res.data.DISPLAY)
+        this.$router.push({ name: 'currency', params: {id: this.currenciesName[0]}})
         this.currencies = res.data
       })
       .catch((err) => {

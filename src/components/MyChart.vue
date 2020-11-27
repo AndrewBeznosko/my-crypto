@@ -20,11 +20,16 @@ export default {
             height: 500,
         }
     },
+    watch: {
+        $route(to, from) {
+            this.GetHourlyPairOHLCV(this.$route.params.id)
+        }
+    },
     methods: {
-        GetHourlyPairOHLCV() {
+        GetHourlyPairOHLCV(fsym) {
             ApiCryptoCompare.histohour({
                 params: {
-                    fsym: 'BTC',
+                    fsym,
                     tsym: 'USD',
                     limit: 200
                 }
@@ -55,7 +60,7 @@ export default {
         window.addEventListener('resize', this.onResize)
         window.DataCube = this.data.ohlcv
 
-        this.GetHourlyPairOHLCV()
+        this.GetHourlyPairOHLCV(this.$route.params.id)
     },
     beforeDestroy() {
         window.removeEventListener('resize', this.onResize)

@@ -8,7 +8,14 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: ':id',
+        name: 'currency',
+        component: () => import('@/components/MyChart.vue')
+      }
+    ]
   },
   {
     path: '/about',
