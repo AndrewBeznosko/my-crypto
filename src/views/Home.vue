@@ -12,7 +12,7 @@
             :key="currency.CoinInfo.Internal" 
             tag="li" 
             active-class="active" 
-            class="currency-item list-group-item d-flex justify-content-between lh-sm"
+            class="currency-item list-group-item d-flex justify-content-between lh-sm align-items-center"
             :to="{ name: 'currency', params: {id: currency.CoinInfo.Internal}}"
           >
             <div>
@@ -23,7 +23,7 @@
               <!-- <small class="text-muted">Brief description</small> -->
             </div>
             <div class="d-flex flex-column">
-              <span v-for="(sub_currency, j) in currency.DISPLAY" :key="`${i}-${j}`" class="text-muted">
+              <span v-for="(sub_currency, j) in currency.DISPLAY" :key="`${i}-${j}`" class="currency-item__price text-white rounded px-3 py-1" :class="currency.CoinInfo.status && currency.CoinInfo.status == 1 ? 'bg-success' : currency.CoinInfo.status && currency.CoinInfo.status == 2 ? 'bg-danger' : ''">
                 {{ sub_currency.PRICE }} 
               </span>
             </div>
@@ -73,11 +73,47 @@ export default {
       .then((res) => {
         if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: res.data.Data[0].CoinInfo.Name}})
         this.currencies = res.data.Data
+
+        this.currenciesNames = res.data.Data.map((el) => { return el.CoinInfo.Internal })
+        // this.runSocket(true)
+        this.runSocket()
       })
       .catch((err) => {
         console.log(err)
       })
     },
+    runSocket(remove = false) {
+      let _this = this
+      var ccStreamer = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=' + process.env.VUE_APP_CRYPTOCOMPARE_API_KEY);
+      var subscriptioins = this.currenciesNames.map((el) => {
+        return `0~Coinbase~${el}~USD`
+      })
+      ccStreamer.onopen = function onStreamOpen() {
+          var subRequest = {
+              action: remove ? "SubRemove" : "SubAdd",
+              subs: subscriptioins
+          };
+          ccStreamer.send(JSON.stringify(subRequest));
+      }
+
+      ccStreamer.onmessage = function onStreamMessage(message) {
+          var message = event.data;
+          let parsedMsg = JSON.parse(message)
+          let curIndex = _this.currencies.findIndex(s => s.CoinInfo.Internal === parsedMsg.FSYM)
+          if(+(parsedMsg.TYPE) == 0) {
+            let status = 0
+            if(+(parsedMsg.P) > +(_this.currencies[curIndex].RAW.USD.PRICE)) {
+              status = 1
+            } else if(+(parsedMsg.P) < +(_this.currencies[curIndex].RAW.USD.PRICE)) {
+              status = 2
+            }
+            _this.$set(_this.currencies[curIndex].CoinInfo, 'status', status)
+            _this.currencies[curIndex].DISPLAY.USD.PRICE = `$ ${parsedMsg.P}`
+          }
+
+          // console.log("Received from Cryptocompare: " + curIndex + " -- " + message);
+      }
+    }
   },
   mounted() {
     this.getCurrencies()
@@ -90,6 +126,10 @@ export default {
     cursor: pointer;
     background-color: #2c3945;
 
+    &__price {
+      background-color: #384858;
+    }
+
     &:hover,
     &.active {
       background-color: #23a776;
@@ -99,8 +139,14 @@ export default {
         color: #fff !important;
       }
 
-      .currency-item__name {
-        color: #fff;
+      .currency-item {
+        &__name {
+          color: #fff;
+        }
+
+        &__price {
+          background-color: transparent;
+        }
       }
     }
   }
