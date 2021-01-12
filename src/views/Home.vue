@@ -75,7 +75,6 @@ export default {
         this.currencies = res.data.Data
 
         this.currenciesNames = res.data.Data.map((el) => { return el.CoinInfo.Internal })
-        // this.runSocket(true)
         this.runSocket()
       })
       .catch((err) => {
@@ -117,6 +116,9 @@ export default {
   },
   mounted() {
     this.getCurrencies()
+  },
+  beforeDestroy: function () {
+    this.runSocket(true)
   }
 }
 </script>
