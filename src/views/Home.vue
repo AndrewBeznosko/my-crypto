@@ -1,155 +1,165 @@
 <template>
-  <div class="container-fluid vh-100 d-flex flex-column align-items-center justify-content-center py-3">
-    <div class="row w-100 h-100">
-      <div class="col-md-5 col-lg-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted">Toplist by 24H</span>
-          <span v-if="currencies.length" class="badge bg-secondary rounded-pill">{{ currencies.length }}</span>
-        </h4>
-        <ul v-if="currencies.length" class="list-group mb-3">
-          <router-link 
-            v-for="(currency, i) in currencies" 
-            :key="currency.CoinInfo.Internal" 
-            tag="li" 
-            active-class="active" 
-            class="currency-item list-group-item d-flex justify-content-between lh-sm align-items-center"
-            :to="{ name: 'currency', params: {id: currency.CoinInfo.Internal}}"
-          >
-            <div>
-              <h6 class="my-0 d-flex align-items-center">
-                <img :src="`${crypto_app_url}/${currency.CoinInfo.ImageUrl}`" :alt="currency.CoinInfo.FullName" style="max-width: 30px">
-                <span class="currency-item__name ml-3 text-muted">{{ currency.CoinInfo.FullName }}</span>
-              </h6>
-              <!-- <small class="text-muted">Brief description</small> -->
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-3">
+            <div class="my-3 plate-page text-center">
+                <form @submit.prevent="getInfo" class="number">
+                    <div class="number__flag">
+                        <div class="number__flag-icon">
+                            <div class="number__flag-blue"></div>
+                            <div class="number__flag-yellow"></div>
+                        </div>
+                        <div class="number__country">UA</div>
+                    </div>
+                    <input v-model.trim="number" type="text" class="number__text" id="number" placeholder="AA9359PC" required>
+                </form>
             </div>
-            <div class="d-flex flex-column">
-              <span v-for="(sub_currency, j) in currency.DISPLAY" :key="`${i}-${j}`" class="currency-item__price text-white rounded px-3 py-1" :class="currency.CoinInfo.status && currency.CoinInfo.status == 1 ? 'bg-success' : currency.CoinInfo.status && currency.CoinInfo.status == 2 ? 'bg-danger' : ''">
-                {{ sub_currency.PRICE }} 
-              </span>
-            </div>
-          </router-link>
-        </ul>
-        <figcaption class="blockquote-footer mt-4">
-          Test Task by Andrew Beznosko <a href="https://github.com/AndrewBeznosko/my-crypto" target="_blank"><cite title="Source Title">Source Code</cite></a>
-        </figcaption>
-      </div>
-      <div class="col-lg-9 d-flex flex-column">
-        <h4 class="d-flex justify-content-between align-items-center mb-3 ml-lg-5 pl-lg-2" style="flex: 0 1 auto;">
-          <span class="text-muted">Daily Pair </span>
-          <span class="badge bg-secondary rounded-pill"><span class="fw-bold">{{ $route.params.id }} / USD</span></span>
-        </h4>
-        <router-view/>
-      </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-import MyChart from '@/components/MyChart.vue'
-import ApiCryptoCompare from '@/api/cryptocompare'
+    // @ is an alias to /src
+    import HelloWorld from '@/components/HelloWorld.vue'
+    import MyChart from '@/components/MyChart.vue'
+    import ApiOpencars from '@/api/opencars'
+    import ApiBazaGai from '@/api/baza-gai'
+    import {
+        mapMutations
+    } from 'vuex'
 
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld,
-    MyChart
-  },
-  data() {
-    return {
-      crypto_app_url: process.env.VUE_APP_CRYPTOCOMPARE_URL,
-      currencies: {},
-    }
-  },
-  methods: {
-    getCurrencies() {
-      ApiCryptoCompare.topTotalvolfull({
-        params: {
-          limit: 15,
-          tsym: 'USD'
-        }
-      })
-      .then((res) => {
-        if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: res.data.Data[0].CoinInfo.Name}})
-        this.currencies = res.data.Data
-
-        this.currenciesNames = res.data.Data.map((el) => { return el.CoinInfo.Internal })
-        this.runSocket()
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    },
-    runSocket(remove = false) {
-      let _this = this
-      var ccStreamer = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=' + process.env.VUE_APP_CRYPTOCOMPARE_API_KEY);
-      var subscriptioins = this.currenciesNames.map((el) => {
-        return `0~Coinbase~${el}~USD`
-      })
-      ccStreamer.onopen = function onStreamOpen() {
-          var subRequest = {
-              action: remove ? "SubRemove" : "SubAdd",
-              subs: subscriptioins
-          };
-          ccStreamer.send(JSON.stringify(subRequest));
-      }
-
-      ccStreamer.onmessage = function onStreamMessage(message) {
-          var message = event.data;
-          let parsedMsg = JSON.parse(message)
-          let curIndex = _this.currencies.findIndex(s => s.CoinInfo.Internal === parsedMsg.FSYM)
-          if(+(parsedMsg.TYPE) == 0) {
-            let status = 0
-            if(+(parsedMsg.P) > +(_this.currencies[curIndex].RAW.USD.PRICE)) {
-              status = 1
-            } else if(+(parsedMsg.P) < +(_this.currencies[curIndex].RAW.USD.PRICE)) {
-              status = 2
+    export default {
+        name: 'Home',
+        components: {
+            HelloWorld,
+            MyChart
+        },
+        data() {
+            return {
+                crypto_app_url: 'process.env.VUE_APP_CRYPTOCOMPARE_URL',
+                currencies: {},
+                number: 'AA9359PC',
+                operations: []
             }
-            _this.$set(_this.currencies[curIndex].CoinInfo, 'status', status)
-            _this.currencies[curIndex].DISPLAY.USD.PRICE = `$ ${parsedMsg.P}`
-          }
+        },
+        methods: {
+            ...mapMutations([
+                'changeCurrentCar',
+            ]),
+            getOperations() {
+                ApiOpencars.operations({
+                        params: {
+                            number: this.number,
+                            limit: 10,
+                            order: 'desc'
+                        }
+                    })
+                    .then((res) => {
+                        this.changeCurrentCar(res.data)
+                        this.operations = res.data
+                        // if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: res.data.Data[0].CoinInfo.Name}})
+                        // this.currencies = res.data.Data
 
-          // console.log("Received from Cryptocompare: " + curIndex + " -- " + message);
-      }
+                        // this.currenciesNames = res.data.Data.map((el) => { return el.CoinInfo.Internal })
+                    })
+                    .catch((err) => {
+                        // console.log(err)
+                    })
+            },
+            getInfo() {
+                ApiBazaGai.getInfo(this.number)
+                    .then((res) => {
+                        this.changeCurrentCar(res.data)
+                        this.operations = res.data
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            }
+        },
+        mounted() {
+
+            // this.getCurrencies()
+        },
     }
-  },
-  mounted() {
-    this.getCurrencies()
-  },
-  beforeDestroy: function () {
-    this.runSocket(true)
-  }
-}
 </script>
 
 <style scoped lang="scss">
-  .currency-item {
-    cursor: pointer;
-    background-color: #2c3945;
+    .number {
+        display: inline-flex;
+        border: 3px solid #484848;
+        font-size: 3.2rem;
+        border-radius: 5px;
+        width: auto;
 
-    &__price {
-      background-color: #384858;
-    }
-
-    &:hover,
-    &.active {
-      background-color: #23a776;
-      border-color: #23a776;
-
-      .text-muted {
-        color: #fff !important;
-      }
-
-      .currency-item {
-        &__name {
-          color: #fff;
+        &__text {
+            padding: 2px 50px;
+            flex-grow: 3;
+            max-width: 360px;
+            text-transform: uppercase;
         }
 
-        &__price {
-          background-color: transparent;
+        &__flag {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #2860ab;
+            color: white;
+            padding: 12px 0 6px;
+            align-items: center;
+            width: 50px
         }
-      }
+
+        &__flag-icon {
+            width: 32px;
+        }
+
+        &__flag-blue {
+            background: #3a75c4;
+            height: 10px;
+        }
+
+        &__flag-yellow {
+            background: #f9dd16;
+            height: 10px;
+        }
+
+        &__country {
+            font-size: 1.4rem;
+        }
     }
-  }
+
+
+    .number-medium {
+        font-size: 1.8rem;
+        width: 100%;
+
+        .number {
+            &__text {
+                padding: 0.5rem;
+                text-align: center;
+            }
+
+            &__flag {
+                width: 24px;
+                padding: 8px 0 4px;
+            }
+
+            &__flag-icon {
+                width: 24px;
+            }
+
+            &__country {
+                font-size: 1rem;
+            }
+
+            &__flag-blue {
+                height: 8px;
+            }
+
+            &__flag-yellow {
+                height: 8px;
+            }
+        }
+    }
 </style>

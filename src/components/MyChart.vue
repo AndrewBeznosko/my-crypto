@@ -6,7 +6,7 @@
 <script>
 
 import TradingVue from 'trading-vue-js'
-import ApiCryptoCompare from '@/api/cryptocompare'
+// import ApiCryptoCompare from '@/api/cryptocompare'
 
 export default {
     name: 'MyChart',

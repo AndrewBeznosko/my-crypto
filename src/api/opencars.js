@@ -1,16 +1,13 @@
 import axios from 'axios';
 
 const client = axios.create({
-    baseURL: process.env.VUE_APP_CRYPTOCOMPARE_API_BASE_URL,
-    params: {
-        api_key: process.env.VUE_APP_CRYPTOCOMPARE_API_KEY,
-        extraParams: 'my_crypto'
-    }
+    baseURL: process.env.VUE_APP_OPEN_CARS_API_BASE_URL,
+    headers: {'X-Api-Key': process.env.VUE_APP_OPEN_CARS_API_KEY}
 });
 
 export default {
-    pricemultifull(params) {
-        return client.get(`pricemultifull`, params);
+    operations(params) {
+        return client.get(`operations`, params);
     },
     histohour(params) {
         return client.get(`v2/histohour`, params);
