@@ -15,8 +15,6 @@ export default new Vuex.Store({
       }
     },
     getters: {
-        groupById: (state) => (groupId) => {
-            return state.groups.find(group => group.id === groupId)
-        }
+      currentCar: state => state.currentCar
     }
 })

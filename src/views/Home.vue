@@ -19,28 +19,23 @@
 
 <script>
     // @ is an alias to /src
-    import HelloWorld from '@/components/HelloWorld.vue'
-    import MyChart from '@/components/MyChart.vue'
     import ApiOpencars from '@/api/opencars'
     import ApiBazaGai from '@/api/baza-gai'
     import {
+        mapState,
         mapMutations
     } from 'vuex'
 
     export default {
         name: 'Home',
-        components: {
-            HelloWorld,
-            MyChart
-        },
         data() {
             return {
-                crypto_app_url: 'process.env.VUE_APP_CRYPTOCOMPARE_URL',
-                currencies: {},
                 number: 'AA9359PC',
-                operations: []
             }
         },
+        computed: mapState({
+            currentCar: state => state.currentCar
+        }),
         methods: {
             ...mapMutations([
                 'changeCurrentCar',
@@ -55,11 +50,7 @@
                     })
                     .then((res) => {
                         this.changeCurrentCar(res.data)
-                        this.operations = res.data
-                        // if(!(this.$route.params.id)) this.$router.push({ name: 'currency', params: {id: res.data.Data[0].CoinInfo.Name}})
-                        // this.currencies = res.data.Data
-
-                        // this.currenciesNames = res.data.Data.map((el) => { return el.CoinInfo.Internal })
+                        this.$router.push({ name: 'about', params: {id: this.currentCar.digits}})
                     })
                     .catch((err) => {
                         // console.log(err)
@@ -69,16 +60,12 @@
                 ApiBazaGai.getInfo(this.number)
                     .then((res) => {
                         this.changeCurrentCar(res.data)
-                        this.operations = res.data
+                        this.$router.push({ name: 'about', params: {id: this.currentCar.digits}})
                     })
                     .catch((err) => {
                         console.log(err)
                     })
             }
-        },
-        mounted() {
-
-            // this.getCurrencies()
         },
     }
 </script>

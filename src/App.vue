@@ -4,6 +4,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -14,5 +20,6 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;
+  backdrop-filter: blur(2px);
 }
 </style>
