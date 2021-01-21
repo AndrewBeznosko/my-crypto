@@ -31,10 +31,12 @@
         name: 'About',
         computed: {
             currentCar() {
-                console.log(this.$store.getters.currentCar)
                 return this.$store.getters.currentCar
             },
             carFullName: () => this.currentCar.vendor + ' ' + this.currentCar.model,
+        },
+        mounted() {
+            this.$store.dispatch('GET_INFO_BY_NUMBER', this.$route.params.id);
         }
     }
 </script>

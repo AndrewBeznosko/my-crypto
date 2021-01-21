@@ -57,14 +57,15 @@
                     })
             },
             getInfo() {
-                ApiBazaGai.getInfo(this.number)
-                    .then((res) => {
-                        this.changeCurrentCar(res.data)
-                        this.$router.push({ name: 'about', params: {id: this.currentCar.digits}})
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                    })
+                this.$store.dispatch('GET_INFO_BY_NUMBER', this.number);
+                // ApiBazaGai.getInfo(this.number)
+                //     .then((res) => {
+                //         this.changeCurrentCar(res.data)
+                //         this.$router.push({ name: 'about', params: {id: this.currentCar.digits}})
+                //     })
+                //     .catch((err) => {
+                //         console.log(err)
+                //     })
             }
         },
     }
