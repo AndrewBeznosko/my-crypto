@@ -57,7 +57,8 @@
                     })
             },
             getInfo() {
-                this.$store.dispatch('GET_INFO_BY_NUMBER', this.number);
+                this.$store.dispatch('GET_INFO_BY_NUMBER_BY_BAZA_GAI', this.number);
+                this.$store.dispatch('GET_INFO_BY_NUMBER_OPEN_CARS',   this.number);
                 // ApiBazaGai.getInfo(this.number)
                 //     .then((res) => {
                 //         this.changeCurrentCar(res.data)

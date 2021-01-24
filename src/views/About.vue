@@ -11,9 +11,8 @@
                                 <h1 class="m-0 d-flex align-self-center"><span class="badge rounded-pill bg-success">≈ &nbsp; $8000</span></h1>
                             </div>
                         </div>
-                        <div class="px-5 pt-5 pb-4">
-                          <h2>Параметри:</h2>
-                        </div>
+
+                        <CarParameters/>
                     </div>
                 </div>
             </div>
@@ -26,9 +25,13 @@
         mapState,
         mapMutations
     } from 'vuex'
+    import CarParameters from '@/components/CarParameters.vue'
 
     export default {
         name: 'About',
+        components: {
+            CarParameters,
+        },
         computed: {
             currentCar() {
                 return this.$store.getters.currentCar
@@ -36,7 +39,8 @@
             carFullName: () => this.currentCar.vendor + ' ' + this.currentCar.model,
         },
         mounted() {
-            this.$store.dispatch('GET_INFO_BY_NUMBER', this.$route.params.id);
+            this.$store.dispatch('GET_INFO_BY_NUMBER_BY_BAZA_GAI', this.$route.params.id);
+            this.$store.dispatch('GET_INFO_BY_NUMBER_OPEN_CARS',   this.$route.params.id);
         }
     }
 </script>

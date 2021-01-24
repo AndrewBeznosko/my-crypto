@@ -1,23 +1,33 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 import ApiBazaGai from '@/api/baza-gai'
-import { vm } from '@/main'
+import ApiOpencars from '@/api/opencars'
+import {
+    vm
+} from '@/main'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
         groups: [],
-        currentCar: {}
+        currentCar: {},
+        currentCarByOpenCars: {},
+        currentCarPrice: ''
     },
     mutations: {
         changeCurrentCar(state, obj) {
             state.currentCar = obj
-        }
+        },
+        changeCurrentCarByOpenCars(state, obj) {
+            state.currentCarByOpenCars = obj
+        },
     },
     actions: {
-        GET_INFO_BY_NUMBER: ({
-            commit
+        GET_INFO_BY_NUMBER_BY_BAZA_GAI: ({
+            commit,
+            dispatch
         }, payload) => {
             ApiBazaGai.getInfo(payload)
                 .then((res) => {
@@ -30,11 +40,68 @@ export default new Vuex.Store({
                         })
                     }
                     commit('changeCurrentCar', res.data)
+                    dispatch('GET_AVARANGE_PROCE_FROM_AUTORIA', {
+                        vendor: res.data.vendor,
+                        model: res.data.model
+                    })
                 })
                 .catch((err) => {
                     console.log(err)
                 })
-        }
+        },
+        GET_INFO_BY_NUMBER_OPEN_CARS: ({
+            commit
+        }, payload) => {
+            ApiOpencars.operations({
+                    params: {
+                        number: payload,
+                        limit: 10,
+                        order: 'desc'
+                    }
+                })
+                .then((res) => {
+                    commit('changeCurrentCarByOpenCars', res.data)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+        GET_AVARANGE_PROCE_FROM_AUTORIA: ({
+            commit,
+            dispatch
+        }, payload) => {
+            let formating_string_for_url = (str) => str.toLowerCase().replace(/\s+/g, '-');
+            let vendor = formating_string_for_url(payload.vendor),
+                model = formating_string_for_url(payload.model),
+                autoria_url = `https://auto.ria.com/uk/car/${vendor}/${model}/`
+
+            axios.post('http://pr.loc/price.php', {
+                    car: vendor,
+                    model: model,
+                })
+            // axios({
+            //   method: 'post',
+            //   url: 'http://pr.loc/price.php',
+            //   responseType: 'text',
+            //   data: {
+            //     car: vendor,
+            //     model: model,
+            //   }
+            //   // headers: {'X-Requested-With': 'XMLHttpRequest'},
+            // })
+                .then((res) => {
+                  console.log(res.data)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            console.log(autoria_url)
+        },
+        FORMATING_STRING_FOR_URL: ({
+            commit
+        }, payload) => {
+            return payload.toLowerCase().split(' ').join('-')
+        },
     },
     getters: {
         currentCar: state => state.currentCar
