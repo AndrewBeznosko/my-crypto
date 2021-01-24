@@ -1,3 +1,6 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~@fortawesome/fontawesome-free/css/all.css'; 
+
 .text-muted {
     color: #bcbcbc!important;
 }
@@ -20,7 +23,69 @@
             transform: translateY(-50%);
             background-color: #fff;
             border-radius: 4px;
-            padding: 10px 20px;
+            padding: 4px 20px;
+        }
+    }
+}
+
+// ==================================================================
+// card-eco
+// ==================================================================
+.card-eco {
+    background-color: #0e0f3b;
+}
+
+// ==================================================================
+// parametr-card
+// ==================================================================
+.parametr-card {
+    display: flex;
+    align-items: center;
+
+    &__icon {
+        width: 2.2rem !important;
+        height: 2.2rem;
+        font-size: 2.2rem;
+    }
+
+    &__text-block {
+        margin-left: 1.6rem;
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: -15px;
+            width: 1px;
+            height: 35px;
+            border-left: 1px solid #dee2e6;
+        }
+
+        &--before-hidden::before {
+            display: none;
+        }
+    }
+
+    &__title {
+        margin: 0;
+    }
+
+    &__description {
+        font-size: 1.4rem;
+        margin: 0;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &--primary {
+            font-weight: bold;
+            letter-spacing: 1px;
         }
     }
 }

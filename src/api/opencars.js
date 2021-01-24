@@ -9,10 +9,7 @@ export default {
     operations(params) {
         return client.get(`operations`, params);
     },
-    histohour(params) {
-        return client.get(`v2/histohour`, params);
-    },
-    topTotalvolfull(params) {
-        return client.get(`top/totalvolfull`, params);
+    registrations(params) {
+        return client.get(`registrations`, params);
     },
 };

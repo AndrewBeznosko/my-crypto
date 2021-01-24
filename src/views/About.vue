@@ -12,7 +12,8 @@
                             </div>
                         </div>
 
-                        <CarParameters/>
+                        <CarParameters class="mt-4 mb-2"/>
+                        <CarEco/>
                     </div>
                 </div>
             </div>
@@ -26,11 +27,13 @@
         mapMutations
     } from 'vuex'
     import CarParameters from '@/components/CarParameters.vue'
+    import CarEco from '@/components/CarEco.vue'
 
     export default {
         name: 'About',
         components: {
             CarParameters,
+            CarEco,
         },
         computed: {
             currentCar() {

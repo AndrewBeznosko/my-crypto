@@ -13,16 +13,22 @@ export default new Vuex.Store({
     state: {
         groups: [],
         currentCar: {},
-        currentCarByOpenCars: [],
+        currentCarByOpenCars: {
+            operations: [],
+            registrations: [],
+        },
         currentCarPrice: ''
     },
     mutations: {
         changeCurrentCar(state, obj) {
             state.currentCar = obj
         },
-        changeCurrentCarByOpenCars(state, obj) {
-            state.currentCarByOpenCars = obj
+        operationsByOpenCars(state, arr) {
+            state.currentCarByOpenCars.operations = arr
         },
+        registrationsByOpenCars(state, arr) {
+            state.currentCarByOpenCars.registrations = arr
+        }
     },
     actions: {
         GET_INFO_BY_NUMBER_BY_BAZA_GAI: ({
@@ -60,7 +66,19 @@ export default new Vuex.Store({
                     }
                 })
                 .then((res) => {
-                    commit('changeCurrentCarByOpenCars', res.data)
+                    commit('operationsByOpenCars', res.data)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            
+            ApiOpencars.registrations({
+                    params: {
+                        number: payload,
+                    }
+                })
+                .then((res) => {
+                    commit('registrationsByOpenCars', res.data)
                 })
                 .catch((err) => {
                     console.log(err)
