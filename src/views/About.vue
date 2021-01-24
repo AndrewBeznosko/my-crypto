@@ -7,7 +7,7 @@
                         <div class="card__img-block d-flex align-items-end border-bottom">
                             <img :src="currentCar.photoUrl" class="card__object-fit" :alt="currentCar.vendor + ' ' + currentCar.model">
                             <div class="card__img-block-content d-flex justify-content-between px-5 pb-3 w-100">
-                                <h1 class="card-title fw-bold m-0">{{ currentCar.vendor + ' ' + currentCar.model }}</h1>
+                                <h1 class="card-title fw-bold m-0">{{ currentCar.vendor + ' ' + currentCar.model + ' - ' + currentCar.year}}</h1>
                                 <h1 class="m-0 d-flex align-self-center"><span class="badge rounded-pill bg-success">≈ &nbsp; $8000</span></h1>
                             </div>
                         </div>

@@ -1,3 +1,26 @@
 .text-muted {
     color: #bcbcbc!important;
 }
+
+.text-secondary {
+    opacity: 0.5;
+}
+
+// ==================================================================
+// card
+// ==================================================================
+.card {
+    position: relative;
+
+    &__header {
+        &--absolute {
+            position: absolute;
+            left: 3rem;
+            top: 0;
+            transform: translateY(-50%);
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 10px 20px;
+        }
+    }
+}

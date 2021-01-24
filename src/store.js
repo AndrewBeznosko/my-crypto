@@ -13,7 +13,7 @@ export default new Vuex.Store({
     state: {
         groups: [],
         currentCar: {},
-        currentCarByOpenCars: {},
+        currentCarByOpenCars: [],
         currentCarPrice: ''
     },
     mutations: {
@@ -104,6 +104,7 @@ export default new Vuex.Store({
         },
     },
     getters: {
-        currentCar: state => state.currentCar
+        currentCar: state => state.currentCar,
+        currentCarByOpenCars: state => state.currentCarByOpenCars,
     }
 })
