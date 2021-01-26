@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="min-vh-100">
+    <h1 class="app__header">Введіть держ. номер автомобіля для пошуку</h1> 
     <router-view/>
   </div>
 </template>

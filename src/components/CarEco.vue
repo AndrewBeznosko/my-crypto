@@ -47,7 +47,7 @@
 
 <script>
     export default {
-        name: 'CarParameters',
+        name: 'CarEco',
         props: {
             carInfo: String
         },

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap');
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~@fortawesome/fontawesome-free/css/all.css'; 
 
@@ -32,7 +33,7 @@
 // card-eco
 // ==================================================================
 .card-eco {
-    background-color: #0e0f3b;
+    background-color: #0e0f3b !important;
 }
 
 // ==================================================================
@@ -51,7 +52,7 @@
     &__text-block {
         margin-left: 1.6rem;
         position: relative;
-        white-space: nowrap;
+        white-space: nowrap;    
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -88,4 +89,14 @@
             letter-spacing: 1px;
         }
     }
+}
+
+.app__header {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    bottom: 50px;
 }
