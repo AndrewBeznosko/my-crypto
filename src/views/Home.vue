@@ -1,18 +1,25 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center align-items-center min-vh-100 py-3">
-            <div class="my-3 plate-page text-center">
-                <form @submit.prevent="getInfo" class="number">
-                    <div class="number__flag">
-                        <div class="number__flag-icon">
-                            <div class="number__flag-blue"></div>
-                            <div class="number__flag-yellow"></div>
-                        </div>
-                        <div class="number__country">UA</div>
+    <div>
+        <div class="car-bg">
+            <div class="container">
+                <div class="row justify-content-center align-items-center min-vh-100 py-3">
+                    <div class="my-3 plate-page text-center">
+                        <form @submit.prevent="getInfo" class="number">
+                            <div class="number__flag">
+                                <div class="number__flag-icon">
+                                    <div class="number__flag-blue"></div>
+                                    <div class="number__flag-yellow"></div>
+                                </div>
+                                <div class="number__country">UA</div>
+                            </div>
+                            <input v-model.trim="number" type="text" class="number__text" id="number" placeholder="AA9359PC" required>
+                        </form>
                     </div>
-                    <input v-model.trim="number" type="text" class="number__text" id="number" placeholder="AA9359PC" required>
-                </form>
+                </div>
             </div>
+        </div>
+        <div class="min-vh-100 d-flex align-items-center justify-content-center">
+            <CarsStats/>
         </div>
     </div>
 </template>
@@ -21,6 +28,7 @@
     // @ is an alias to /src
     import ApiOpencars from '@/api/opencars'
     import ApiBazaGai from '@/api/baza-gai'
+    import CarsStats from '@/components/CarsStats.vue'
     import {
         mapState,
         mapMutations
@@ -28,6 +36,9 @@
 
     export default {
         name: 'Home',
+        components: {
+            CarsStats,
+        },
         data() {
             return {
                 number: 'AA9359PC',
@@ -50,7 +61,12 @@
                     })
                     .then((res) => {
                         this.changeCurrentCar(res.data)
-                        this.$router.push({ name: 'about', params: {id: this.currentCar.digits}})
+                        this.$router.push({
+                            name: 'about',
+                            params: {
+                                id: this.currentCar.digits
+                            }
+                        })
                     })
                     .catch((err) => {
                         // console.log(err)
@@ -58,7 +74,7 @@
             },
             getInfo() {
                 this.$store.dispatch('GET_INFO_BY_NUMBER_BY_BAZA_GAI', this.number);
-                this.$store.dispatch('GET_INFO_BY_NUMBER_OPEN_CARS',   this.number);
+                this.$store.dispatch('GET_INFO_BY_NUMBER_OPEN_CARS', this.number);
                 // ApiBazaGai.getInfo(this.number)
                 //     .then((res) => {
                 //         this.changeCurrentCar(res.data)

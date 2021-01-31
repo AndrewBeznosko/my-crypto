@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap');
 @import '~bootstrap/dist/css/bootstrap.min.css';
-@import '~@fortawesome/fontawesome-free/css/all.css'; 
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
 .text-muted {
-    color: #bcbcbc!important;
+    color: #bcbcbc !important;
 }
 
 .text-secondary {
@@ -52,7 +52,7 @@
     &__text-block {
         margin-left: 1.6rem;
         position: relative;
-        white-space: nowrap;    
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -99,4 +99,13 @@
     font-family: 'Montserrat', sans-serif;
     color: #fff;
     bottom: 50px;
+}
+
+.car-bg {
+    background-image: url('~@/assets/img/app_bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+    // background-attachment: fixed;
+    backdrop-filter: blur(2px);
 }
