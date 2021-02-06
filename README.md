@@ -1,4 +1,4 @@
-# my-crypto
+# VIN-auto
 
 ## Project setup
 ```
